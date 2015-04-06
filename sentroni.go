@@ -9,6 +9,7 @@ package sentroni
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -41,7 +42,7 @@ func (rec *recovery) ServeHTTP(rw http.ResponseWriter, r *http.Request, next htt
 	defer func() {
 		if err := recover(); err != nil {
 			rec.Logger.Printf("PANIC: %s\n%s", err, debug.Stack())
-			rec.Client.CaptureError(errors.New(err.(string)), nil)
+			rec.Client.CaptureError(errors.New(fmt.Sprintf("%v", err)), nil)
 			rw.WriteHeader(http.StatusInternalServerError)
 		}
 	}()
